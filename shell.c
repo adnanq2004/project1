@@ -1,4 +1,7 @@
 #include <unistd.h>
+#include <dirent.h>
+#include <errno.h>
+#include <sys/stat.h>
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
@@ -34,20 +37,103 @@ static void sighandler(int sig) {
 }
 */
 
+int shell_ls(int argc, char * argv[]) {
+	struct dirent *data;
+  	struct stat space;
+  	DIR *d;
+  unsigned int n;
+
+  /*
+  char sub[100];
+  if(argc > 1) {
+    d = opendir(argv[1]);
+    if(errno) {
+      printf("%s\n", strerror(errno));
+      return -1;
+    }
+  } else {
+    printf("Provide a Directory: ");
+     scanf("%s",sub);
+    d = opendir(sub);
+    if(d < 0) {
+      printf("Error %d: %s\n", errno, strerror(errno));
+      return -1;
+    }
+  }
+ */
+
+  d = opendir(argv[1]);
+  printf("\ndoggy1\n");
+  n = 0;
+  printf("Statistics for directory: ./\n");
+
+  data = readdir(d);
+  while(data) {
+    stat(data->d_name, &space);
+    n += space.st_size;
+    data = readdir(d);
+  }
+  printf("Total Directory Size: %d\n", n);
+
+  rewinddir(d);
+  data = readdir(d);
+
+  printf("\ndoggy2\n");
+  printf("Directories: \n");
+  while(data) {
+    stat(data->d_name, &space);
+    if(data->d_type == DT_DIR) {
+      printf("%s \n", data->d_name);
+    }
+    data = readdir(d);
+  }
+
+  rewinddir(d);
+  data = readdir(d);
+
+  printf("\ndoggy3\n");
+  printf("Regular Files: \n");
+  while(data) {
+    stat(data->d_name, &space);
+    if(data->d_type != DT_DIR) {
+      printf("%s \n", data->d_name);
+    }
+    data = readdir(d);
+  }
+
+  return 0;
+}
+
+
+
 int main() {
 
 	int ex = 0;
 	//int waiting = 0;
 	int child = 0;
 	int i = 1;
+	char direct[256];
 	while (i) {
-		printf("\nSALT:~$ ");
+		printf("\nSALT: %s~$ ", direct);
 		char data[256];
 		fgets(data, sizeof(data), stdin);
 		char ** args = parse_args(data);
 		if (!strcmp(args[0], "exit\n")) {
-			printf("\nbacking out\n");
 			exit(0);
+		}
+		else if (!strcmp(args[0], "ls\n")) {
+			printf("\ndoggy99\n");
+			shell_ls(sizeof(args), args);
+		}
+		else if (!strcmp(args[0], "cd\n")) {
+			printf("\ngoing to base directory\n");
+			direct[0] = 0;
+			chdir("");
+		}
+		else if (!strcmp(args[0], "cd")) {
+			printf("\ngoing to directory %s\n", args[1]);
+			strcat(args[1], direct);
+			chdir(args[1]);
 		}
 		else {
 			child = fork();
