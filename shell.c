@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include <sys/wait.h>
 
 int argcount(char *line){
   int i;
@@ -38,9 +39,8 @@ int main() {
 	int ex = 0;
 	//int waiting = 0;
 	int child = 0;
-	int i = 0;
-	while (!ex && i < 10) {
-		i++;
+	int i = 1;
+	while (i) {
 		printf("\nSALT:~$ ");
 		char data[256];
 		fgets(data, sizeof(data), stdin);
@@ -49,7 +49,16 @@ int main() {
 			printf("\nbacking out\n");
 			exit(0);
 		}
-
+		else {
+			child = fork();
+			if (child == 0) {
+				execvp(args[0], args);
+				exit(0);
+			}
+			else {
+				wait(NULL);
+			}
+		}
 		/*
 		if (!waiting) {
 			printf("\nSALT:~$ ");
