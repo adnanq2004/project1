@@ -42,10 +42,17 @@ static void sighandler(int sig) {
 
 int shell_ls() {
 	struct dirent *data;
-  	struct stat space;
-  	DIR *d;
+  struct stat space;
+  DIR *d;
   unsigned int n;
-
+  d = opendir("./");
+  data = readdir(d);
+  printf("\n");
+  while(data) {
+    printf("%s  ", data->d_name);
+    data = readdir(d);
+  }
+  printf("\n");
   /*
   char sub[100];
   if(argc > 1) {
@@ -65,7 +72,6 @@ int shell_ls() {
   }
  */
 
-  d = opendir("./");
   //printf("\ndoggy1\n");
   /*
   n = 0;
@@ -81,30 +87,30 @@ int shell_ls() {
 
   rewinddir(d);
   */
-  data = readdir(d);
-
-  //printf("\ndoggy2\n");
-  printf("\nDirectories: \n");
-  while(data) {
-    stat(data->d_name, &space);
-    if(data->d_type == DT_DIR) {
-      printf("%s \n", data->d_name);
-    }
-    data = readdir(d);
-  }
-
-  rewinddir(d);
-  data = readdir(d);
-
-  //printf("\ndoggy3\n");
-  printf("\nRegular Files: \n");
-  while(data) {
-    stat(data->d_name, &space);
-    if(data->d_type != DT_DIR) {
-      printf("%s \n", data->d_name);
-    }
-    data = readdir(d);
-  }
+  // data = readdir(d);
+  //
+  // //printf("\ndoggy2\n");
+  // printf("\nDirectories: \n");
+  // while(data) {
+  //   stat(data->d_name, &space);
+  //   if(data->d_type == DT_DIR) {
+  //     printf("%s \n", data->d_name);
+  //   }
+  //   data = readdir(d);
+  // }
+  //
+  // rewinddir(d);
+  // data = readdir(d);
+  //
+  // //printf("\ndoggy3\n");
+  // printf("\nRegular Files: \n");
+  // while(data) {
+  //   stat(data->d_name, &space);
+  //   if(data->d_type != DT_DIR) {
+  //     printf("%s \n", data->d_name);
+  //   }
+  //   data = readdir(d);
+  // }
 
   return 0;
 }
@@ -121,19 +127,25 @@ char * shell_cd(char * args_list[], char * currentdir) {
 
 		}
 		*/
+    printf("\ndoggy1\n");
     chdir(args_list[1]);
+    printf("\ndoggy2\n");
     if (!errno) {
+      printf("\ndoggy3\n");
       strcat("/", currentdir);
       strcat(currentdir, args_list[1]);
     }
     else {
-      printf("%d", errno);
+      printf("\ndoggy5\n");
+      printf("\n%d\n", errno);
     }
+    printf("\ndoggy4\n");
+    return currentdir;
 	}
   // strcat("temp", currentdir);
   // chdir(args_list[1]);
 
-  return 0;
+  // return 0;
 }
 
 int main() {
