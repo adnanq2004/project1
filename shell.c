@@ -37,7 +37,7 @@ static void sighandler(int sig) {
 }
 */
 
-int shell_ls(int argc, char * argv[]) {
+int shell_ls() {
 	struct dirent *data;
   	struct stat space;
   	DIR *d;
@@ -62,8 +62,9 @@ int shell_ls(int argc, char * argv[]) {
   }
  */
 
-  d = opendir(argv[1]);
-  printf("\ndoggy1\n");
+  d = opendir("./");
+  //printf("\ndoggy1\n");
+  /*
   n = 0;
   printf("Statistics for directory: ./\n");
 
@@ -73,13 +74,14 @@ int shell_ls(int argc, char * argv[]) {
     n += space.st_size;
     data = readdir(d);
   }
-  printf("Total Directory Size: %d\n", n);
+  printf("\nTotal Directory Size: %d\n", n);
 
   rewinddir(d);
+  */
   data = readdir(d);
 
-  printf("\ndoggy2\n");
-  printf("Directories: \n");
+  //printf("\ndoggy2\n");
+  printf("\nDirectories: \n");
   while(data) {
     stat(data->d_name, &space);
     if(data->d_type == DT_DIR) {
@@ -91,8 +93,8 @@ int shell_ls(int argc, char * argv[]) {
   rewinddir(d);
   data = readdir(d);
 
-  printf("\ndoggy3\n");
-  printf("Regular Files: \n");
+  //printf("\ndoggy3\n");
+  printf("\nRegular Files: \n");
   while(data) {
     stat(data->d_name, &space);
     if(data->d_type != DT_DIR) {
@@ -104,7 +106,22 @@ int shell_ls(int argc, char * argv[]) {
   return 0;
 }
 
-
+int shell_cd(char * args_list[], char * currentdir) {
+	if (!args_list[1]) {
+		currentdir[0] = 0;
+		chdir("");
+	}
+	else {
+		/*
+		if (!strcmp(args_list[1], "..")) {
+			
+		}
+		*/
+		strcat("/", currentdir);
+		strcat(args_list[1], currentdir);
+		chdir(args_list[1]);
+	}
+}
 
 int main() {
 
@@ -122,9 +139,10 @@ int main() {
 			exit(0);
 		}
 		else if (!strcmp(args[0], "ls\n")) {
-			printf("\ndoggy99\n");
-			shell_ls(sizeof(args), args);
+			//printf("\ndoggy99\n");
+			shell_ls();
 		}
+		/*
 		else if (!strcmp(args[0], "cd\n")) {
 			printf("\ngoing to base directory\n");
 			direct[0] = 0;
@@ -134,6 +152,10 @@ int main() {
 			printf("\ngoing to directory %s\n", args[1]);
 			strcat(args[1], direct);
 			chdir(args[1]);
+		}
+		*/
+		else if (!strcmp(args[0], "cd") || !strcmp(args[0], "cd\n")) {
+			shell_cd(args, direct);
 		}
 		else {
 			child = fork();
