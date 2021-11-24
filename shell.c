@@ -6,6 +6,9 @@
 #include <stdio.h>
 #include <string.h>
 #include <sys/wait.h>
+#include <limits.h>
+#include <fcntl.h>
+#include <pwd.h>
 
 int argcount(char *line){
   int i;
@@ -18,15 +21,15 @@ int argcount(char *line){
 }
 
 char **parse_args( char *line ) {
-    char *temp;
-    int counter;
-    char **returnline = calloc(5, sizeof(char *));
-    counter = 0;
-    while ((temp = strsep(&line, " "))) {
-        returnline[counter] = temp;
-        counter++;
-    }
-    return returnline;
+  char *temp;
+  int counter;
+  char **returnline = calloc(5, sizeof(char *));
+  counter = 0;
+  while ((temp = strsep(&line, " "))) {
+    returnline[counter] = temp;
+    counter++;
+  }
+  return returnline;
 }
 
 /*
@@ -106,21 +109,31 @@ int shell_ls() {
   return 0;
 }
 
-int shell_cd(char * args_list[], char * currentdir) {
+char * shell_cd(char * args_list[], char * currentdir) {
 	if (!args_list[1]) {
-		currentdir[0] = 0;
+    strcpy(currentdir, "");
 		chdir("");
+    return currentdir;
 	}
 	else {
 		/*
 		if (!strcmp(args_list[1], "..")) {
-			
+
 		}
 		*/
-		strcat("/", currentdir);
-		strcat(args_list[1], currentdir);
-		chdir(args_list[1]);
+    chdir(args_list[1]);
+    if (!errno) {
+      strcat("/", currentdir);
+      strcat(currentdir, args_list[1]);
+    }
+    else {
+      printf("%d", errno);
+    }
 	}
+  // strcat("temp", currentdir);
+  // chdir(args_list[1]);
+
+  return 0;
 }
 
 int main() {
@@ -130,8 +143,9 @@ int main() {
 	int child = 0;
 	int i = 1;
 	char direct[256];
-	while (i) {
-		printf("\nSALT: %s~$ ", direct);
+  strcpy(direct, "");
+  while (i) {
+		printf("\nSALT: ~%s$ ", direct);
 		char data[256];
 		fgets(data, sizeof(data), stdin);
 		char ** args = parse_args(data);
@@ -139,7 +153,6 @@ int main() {
 			exit(0);
 		}
 		else if (!strcmp(args[0], "ls\n")) {
-			//printf("\ndoggy99\n");
 			shell_ls();
 		}
 		/*
@@ -155,7 +168,7 @@ int main() {
 		}
 		*/
 		else if (!strcmp(args[0], "cd") || !strcmp(args[0], "cd\n")) {
-			shell_cd(args, direct);
+			strcpy(direct, shell_cd(args, direct));
 		}
 		else {
 			child = fork();
@@ -167,31 +180,7 @@ int main() {
 				wait(NULL);
 			}
 		}
-		/*
-		if (!waiting) {
-			printf("\nSALT:~$ ");
-			waiting = 1;
-		}
-		else {
-			char data[256];
-			fgets(data, sizeof(data), stdin);
-			//int nums = argcount(data);
-			char ** args = parse_args(data);
-			if (!strcmp(args[0], "cd")) {
-				printf("supposed to backout");
-			}
-			if (!strcmp(args[0], "exit")) {
-				printf("supposed to kill");
-				execvp("kill", args);
-			}
-			child = fork();
-			execvp(args[0], args);
-			waiting = 0;
-		}
-		*/
 
-		//i++;
-	
 	}
 
 }
