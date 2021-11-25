@@ -118,24 +118,24 @@ int main() {
       if (s >= r) {
         return 1;
       }
-      char ** tempargs = malloc(sizeof(args));
-      int counter;
-      for(counter = s; counter < r; counter++) {
-        strcpy(tempargs[counter - s], args[counter]);
-      }
-      if (!strcmp(tempargs[0], "exit\n")) {
+      // char tempargs[r-s][256];
+      // int counter;
+      // for(counter = s; counter < r; counter++) {
+      //   strcpy(tempargs[counter - s], args[counter]);
+      // }
+      if (!strcmp(args[s], "exit\n")) {
         exit(0);
       }
-      else if (!strcmp(tempargs[0], "ls\n")) {
+      else if (!strcmp(args[s], "ls\n")) {
         shell_ls();
       }
-      else if (!strcmp(tempargs[0], "cd") || !strcmp(tempargs[0], "cd\n")) {
+      else if (!strcmp(args[s], "cd") || !strcmp(args[s], "cd\n")) {
         strcpy(direct, shell_cd(args, direct));
       }
       else {
         child = fork();
         if (child == 0) {
-          execvp(tempargs[0], tempargs);
+          execvp(args[s], args);
           exit(0);
         }
         else {
