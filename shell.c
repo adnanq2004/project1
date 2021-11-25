@@ -115,100 +115,38 @@ int main() {
 		char data[256];
 		fgets(data, sizeof(data), stdin);
 
-    //this bit works all the way...
-
-    // char ** args = parse_args(data);
-    // if (!strcmp(args[0], "exit\n")) {
-    //   exit(0);
-    // }
-    // else if (!strcmp(args[0], "ls\n")) {
-    //   shell_ls();
-    // }
-    // else if (!strcmp(args[0], "cd") || !strcmp(args[0], "cd\n")) {
-    //   strcpy(direct, shell_cd(args, direct));
-    // }
-    // else {
-    //   child = fork();
-    //   if (child == 0) {
-    //     execvp(args[0], args);
-    //     exit(0);
-    //   }
-    //   else {
-    //     wait(NULL);
-    //   }
-    // }
-
-    //until about here
-
-    //this is all testing code, to remove semicolons
-
     char ** semi_colon_args = parse_semicolons(data);
     int len = sizeof2d(semi_colon_args);
     int i;
     for (i = 0; i < len; i++) {
       char ** args = parse_args(semi_colon_args[i]);
-      if (!strcmp(args[0], "exit\n")) {
-  			exit(0);
-  		}
-  		else if (!strcmp(args[0], "ls\n")) {
-  			shell_ls();
-  		}
-  		else if (!strcmp(args[0], "cd") || !strcmp(args[0], "cd\n")) {
-  			strcpy(direct, shell_cd(args, direct));
-  		}
-  		else {
-  			child = fork();
-  			if (child == 0) {
-  				execvp(args[0], args);
-  				exit(0);
-  			}
-  			else {
-  				wait(NULL);
-  			}
-  		}
-    }
-
-    // char ** semi_colon_args = parse_semicolons(data);
-
-    // char ** args;
-    // char ** semi_args = parse_semicolons(data);
-    // // char ** args = parse_args(data);
-    // // int i = 0;
-    // // while (args[i]) {
-    //   args = parse_args(semi_args[0]);
-    //   if (!strcmp(args[0], "exit\n")) {
-  	// 		exit(0);
-  	// 	}
-  	// 	else if (!strcmp(args[0], "ls\n")) {
-  	// 		shell_ls();
-  	// 	}
-  	// 	/*
-  	// 	else if (!strcmp(args[0], "cd\n")) {
-  	// 		printf("\ngoing to base directory\n");
-  	// 		direct[0] = 0;
-  	// 		chdir("");
-  	// 	}
-  	// 	else if (!strcmp(args[0], "cd")) {
-  	// 		printf("\ngoing to directory %s\n", args[1]);
-  	// 		strcat(args[1], direct);
-  	// 		chdir(args[1]);
-  	// 	}
-  	// 	*/
-  	// 	else if (!strcmp(args[0], "cd") || !strcmp(args[0], "cd\n")) {
-  	// 		strcpy(direct, shell_cd(args, direct));
-  	// 	}
-  	// 	else {
-  	// 		child = fork();
-  	// 		if (child == 0) {
-  	// 			execvp(args[0], args);
-  	// 			exit(0);
-  	// 		}
-  	// 		else {
-  	// 			wait(NULL);
-  	// 		}
-  	// 	}
-    // }
-
-	}
-
+      int r = sizeof2d(args);
+      int s = 0;
+      while (!strcmp(args[s], "") && s < r) {
+        s++;
+      }
+      if (s >= r) {
+        return 1;
+      }
+      if (!strcmp(args[s], "exit\n")) {
+        exit(0);
+      }
+      else if (!strcmp(args[s], "ls\n")) {
+        shell_ls();
+      }
+      else if (!strcmp(args[s], "cd") || !strcmp(args[s], "cd\n")) {
+        strcpy(direct, shell_cd(args, direct));
+      }
+      else {
+        child = fork();
+        if (child == 0) {
+          execvp(args[s], args);
+          exit(0);
+        }
+        else {
+          wait(NULL);
+        }
+      }
+	  }
+  }
 }
