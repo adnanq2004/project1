@@ -135,7 +135,7 @@ int main() {
       else {
         child = fork();
         if (child == 0) {
-          execvp(tempargs[0], temparg);
+          execvp(tempargs[0], tempargs);
           exit(0);
         }
         else {
