@@ -75,11 +75,6 @@ char * shell_cd(char * args_list[], char * currentdir) {
     return currentdir;
 	}
 	else {
-		/*
-		if (!strcmp(args_list[1], "..")) {
-
-		}
-		*/
     printf("\ndoggy1\n");
     chdir(args_list[1]);
     printf("\ndoggy2\n");
@@ -95,16 +90,11 @@ char * shell_cd(char * args_list[], char * currentdir) {
     printf("\ndoggy4\n");
     return currentdir;
 	}
-  // strcat("temp", currentdir);
-  // chdir(args_list[1]);
-
-  // return 0;
 }
 
 int main() {
 
 	int ex = 0;
-	//int waiting = 0;
 	int child = 0;
 	int i = 1;
 	char direct[256];
@@ -128,19 +118,24 @@ int main() {
       if (s >= r) {
         return 1;
       }
-      if (!strcmp(args[s], "exit\n")) {
+      char ** tempargs = malloc(sizeof(args));
+      int counter;
+      for(counter = s; counter < r; counter++) {
+        strcpy(tempargs[counter - s], args[counter]);
+      }
+      if (!strcmp(tempargs[0], "exit\n")) {
         exit(0);
       }
-      else if (!strcmp(args[s], "ls\n")) {
+      else if (!strcmp(tempargs[0], "ls\n")) {
         shell_ls();
       }
-      else if (!strcmp(args[s], "cd") || !strcmp(args[s], "cd\n")) {
+      else if (!strcmp(tempargs[0], "cd") || !strcmp(tempargs[0], "cd\n")) {
         strcpy(direct, shell_cd(args, direct));
       }
       else {
         child = fork();
         if (child == 0) {
-          execvp(args[s], args);
+          execvp(tempargs[0], temparg);
           exit(0);
         }
         else {
