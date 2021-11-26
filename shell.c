@@ -154,6 +154,18 @@ int * redirect(char ** args) {
   return fd;
 }
 
+// void shell_pipe(char* process1, char* process2) {
+//   char temp[255];
+//   FILE *input, *output;
+//   input = popen(args1, "w");
+//   output = popen(args2, "r");
+//   while(fgets(temp, 255, input)) {
+//     fputs(temp, output);
+//   }
+//   pclose(input);
+//   pclose(output);
+// }
+
 int main() {
 
 	int child = 0;
@@ -188,6 +200,9 @@ int main() {
           execvp(args[0], args);
           exit(0);
         }
+        // else if (!(strcmp(args[1], "||" )) {
+        //   shell_pipe(args);
+        // }
         else {
           if (thing[0] != -1) {
             dup2(thing[1], thing[0]);
