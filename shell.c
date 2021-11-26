@@ -98,78 +98,6 @@ char * splice(char * line) {
   return temp;
 }
 
-
-// int writetofile(char * filename) {
-//   char statement[256];
-//   read(STDIN_FILENO, statement, sizeof(statement));
-//   int filetowrite = open(filename, O_WRONLY | O_CREAT | O_TRUNC, 0644);
-//   write(filetowrite, statement, sizeof(statement));
-//
-// }
-//
-// int redirectout(char ** args, char * filename) {
-//   // int s = sizeof2d(args);
-//   // int n = indexofredirectout(args);
-//   // // printf("%d\n", n);
-//
-//   // int child = fork();
-//   // if (child == 0) {
-//   //   char temp[4096];
-//   //   execvp(args[0], args);
-//   //
-//   //   // int temp = dup(STDIN_FILENO);
-//   //   // dup2(child, STDIN_FILENO);
-//   //   // execvp(args[0], args);
-//   //   // dup2(temp, STDIN_FILENO);
-//   //   // return 0;
-//   // }
-//   // else {
-//   //   return 0;
-//   // }
-//   // // writetofile(filename);
-//
-//   // char ** tempargs = malloc((s - n) * 64);
-//   // int t = s-n;
-//   // int i;
-//   // for (i = 0; i < t; i++) {
-//   //   printf("\npidgeon04\n");
-//   //   strcpy(tempargs[i], args[i]);
-//   //   printf("\npidgeon1\n");
-//   // }
-//   //
-//
-//   // int filedes[2];
-//   // // pipe(filedes, 0);
-//   // int child = fork();
-//   // if (child == 0) {
-//   //   while ((dup2(filedes[1], STDOUT_FILENO) == -1) && (errno == EINTR)) {}
-//   //   close(filedes[1]);
-//   //   close(filedes[0]);
-//   //   execvp(args[0], args);
-//   //   exit(1);
-//   // }
-//   // else {
-//   //   wait(NULL);
-//   //   close(filedes[1]);
-//   // }
-//   // char output[4096];
-//   // // printf("\n%s\n", filedes[0]);
-//   // read(filedes[0], output, sizeof(output));
-//   // close(filedes[0]);
-//   // // printf("\n%s\n", output);
-//   // // return 1;
-//   // //
-//   // int filetowrite = open(filename, O_WRONLY | O_APPEND | O_CREAT | O_TRUNC, 0644);
-//   // write(filetowrite, output, sizeof(output));
-//
-//   int fd[2];
-//   int child = fork();
-//   if (!child) {
-//     execvp(args[0], args[]);
-//   }
-//
-// }
-
 int indexofredirect(char ** args) {
   int n = sizeof2d(args);
   int ret = -1;
@@ -182,32 +110,6 @@ int indexofredirect(char ** args) {
   }
   return ret;
 }
-//
-// int indexofredirectcatout(char ** args) {
-//   int n = sizeof2d(args);
-//   int ret = -1;
-//   int i;
-//   for (i = 0; i < n; i++) {
-//     if (!strcmp(args[i], ">>")) {
-//       ret = i;
-//       break;
-//     }
-//   }
-//   return ret;
-// }
-//
-// int indexofredirectin(char ** args) {
-//   int n = sizeof2d(args);
-//   int ret = -1;
-//   int i;
-//   for (i = 0; i < n; i++) {
-//     if (!strcmp(args[i], "<")) {
-//       ret = i;
-//       break;
-//     }
-//   }
-//   return ret;
-// }
 
 char ** redirect_helper(int filename, int std, int * fd, char ** args_list) {
   dup2(filename, std);
@@ -231,12 +133,12 @@ int * redirect(char ** args) {
     }
     else if (!strcmp(*temp, ">>")) {
       int stdout = dup(1);
-      int file = open(*(temp + 1), O_CREAT | O_TRUNC | O_APPEND | O_WRONLY, 0644);
+      int file = open(*(temp + 1), O_CREAT | O_APPEND | O_WRONLY, 0644);
       temp = redirect_helper(file,1,fd,temp);
       fd[1] = stdout;
       return fd;
     }
-    else if (!strcmp(*temp, ">")) {
+    else if (!strcmp(*temp, "<")) {
       int stdin = dup(0);
       int file = open(*(temp + 1), O_RDONLY, 0644);
       temp = redirect_helper(file,0,fd,temp);
