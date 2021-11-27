@@ -150,7 +150,6 @@ int * redirect(char ** args) {
       return fd;
     }
     else if (!strcmp(*temp, "|")) {
-      // int file = open("pipefile", O_CREAT | O_TRUNC | O_RDWR, 0644);
       char ** temppipe = malloc(sizeof(args));
       strcpy(temppipe[0], *(temp-1));
       strcpy(temppipe[1], ">");
@@ -171,18 +170,6 @@ int * redirect(char ** args) {
   return fd;
 }
 
-// int isoperation(char ** args) {
-//   int ret = 0;
-//   int i;
-//   int s = sizeof2d(args);
-//   for (i = 0; i < s && !ret; i++) {
-//     if (args[i][0] == '+' || args[i][0] == '-' || args[i][0] == '*' || args[i][0] == '/') {
-//       ret = args[i][0];
-//     }
-//   }
-//   return ret;
-// }
-
 int ismath(char * line) {
   int i = 0;
   if (strchr(line, '+') || strchr(line, '-') || strchr(line, '*') || strchr(line, '/')) {
@@ -191,7 +178,6 @@ int ismath(char * line) {
   return i;
 }
 
-//this works for a single type of operation only.
 int operationsnospace(char * line) {
   if (strchr(line, '+')) {
     char ** maths = parse_by_string(line, "+");
@@ -229,68 +215,11 @@ int operationsnospace(char * line) {
     }
     return num;
   }
+  else {
+    int num = atoi(line);
+    return num;
+  }
 }
-
-// int multipleoperationsnospace(char * line) {
-//   char ** math;
-//   int num = 0;
-//   if (strchr(line, '+')) {
-//     math = parse_by_string(line, "+");
-//     int i;
-//     for (i = 0; i < sizeof2d(math); i++) {
-//       if (!strchr(math[i], '-') && !strchr(math[i], '*') && !strchr(math[i], '/')) {
-//         num += operationsnospace(math[i]);
-//         return num;
-//       }
-//       else {
-//         num += multipleoperationsnospace(math[i]);
-//         return num;
-//       }
-//     }
-//   }
-//   else if (strchr(line, '-')) {
-//     math = parse_by_string(line, "-");
-//     int i;
-//     for (i = 0; i < sizeof2d(math); i++) {
-//       if (!strchr(math[i], '+') && !strchr(math[i], '*') && !strchr(math[i], '/')) {
-//         num += operationsnospace(math[i]);
-//         return num;
-//       }
-//       else {
-//         num += multipleoperationsnospace(math[i]);
-//         return num;
-//       }
-//     }
-//   }
-//   else if (strchr(line, '*')) {
-//     math = parse_by_string(line, "*");
-//     int i;
-//     for (i = 0; i < sizeof2d(math); i++) {
-//       if (!strchr(math[i], '-') && !strchr(math[i], '+') && !strchr(math[i], '/')) {
-//         num += operationsnospace(math[i]);
-//         return num;
-//       }
-//       else {
-//         num += multipleoperationsnospace(math[i]);
-//         return num;
-//       }
-//     }
-//   }
-//   else if (strchr(line, '/')) {
-//     math = parse_by_string(line, "/");
-//     int i;
-//     for (i = 0; i < sizeof2d(math); i++) {
-//       if (!strchr(math[i], '-') && !strchr(math[i], '*') && !strchr(math[i], '+')) {
-//         num += operationsnospace(math[i]);
-//         return num;
-//       }
-//       else {
-//         num += multipleoperationsnospace(math[i]);
-//         return num;
-//       }
-//     }
-//   }
-// }
 
 int multipleoperationdetect(char * line) {
   int count = 0;
@@ -314,74 +243,47 @@ int multipleoperationdetect(char * line) {
 }
 
 int multipleoperations(char * line) {
-  if(multipleoperationdetect(line)) {
-    int counter;
-    int parsetool;
-    char ** math = malloc(sizeof(line));
-    if(strchr(line, '+')) {
-      int parsetool = 0;
-      for(counter = 0; counter < strlen(line); counter++) {
-        if(strcmp(line[counter],'+')) {
-          strcat(math[parsetool], line[counter]);
-        } else {
-          parsetool++;
-        }
-      }
-      for(counter = 0; counter < parsetool; counter++) {
-        if(multipleoperationdetect(math[counter]) {
-          math[parsetool] = multipleoperations(math[counter]);
-        } else if(ismath(math[counter])) {
-          math[parsetool] = operationsnospace(math[counter]);
-        }
+  char ** math;
+  int num = 0;
+  if (multipleoperationdetect(line)) {
+    if (strchr(line, '+') != NULL) {
+      math = parse_by_string(line, "+");
+      int i;
+      num += multipleoperations(math[0]);
+      for (i = 1; i < sizeof2d(math); i++) {
+        num += multipleoperations(math[i]);
       }
     }
-    else if(strc(line, '-')) {
-      int parsetool = 0;
-      for(counter = 0; counter < strlen(line); counter++) {
-        if(strcmp(line[counter],'-')) {
-          strcat(math[parsetool], line[counter]);
-        } else {
-          parsetool++;
-        }
-      }
-      for(counter = 0; counter < parsetool; counter++) {
-        if(multipleoperationdetect(math[counter]) {
-          math[parsetool] = multipleoperations(math[counter]);
-        } else if(ismath(math[counter])) {
-          math[parsetool] = operationsnospace(math[counter]);
-        }
+    else if (strchr(line, '-') != NULL) {
+      math = parse_by_string(line, "-");
+      int i;
+      num += multipleoperations(math[0]);
+      for (i = 1; i < sizeof2d(math); i++) {
+        num -= multipleoperations(math[i]);
       }
     }
-    else if(strchr(line, '*')) {
-      int parsetool = 0;
-      for(counter = 0; counter < strlen(line); counter++) {
-        if(strcmp(line[counter],'*')) {
-          strcat(math[parsetool], line[counter]);
-        } else {
-          parsetool++;
-        }
-      }
-      for(counter = 0; counter < parsetool; counter++) {
-        if(multipleoperationdetect(math[counter]) {
-          math[parsetool] = multipleoperations(math[counter]);
-        } else if(ismath(math[counter])) {
-          math[parsetool] = operationsnospace(math[counter]);
-        }
+    else if (strchr(line, '*') != NULL) {
+      math = parse_by_string(line, "*");
+      int i;
+      num += multipleoperations(math[0]);
+      for (i = 1; i < sizeof2d(math); i++) {
+        num *= multipleoperations(math[i]);
       }
     }
-    else if(strchr(line, '/')) {
-      for(counter = 0; counter < strlen(line); counter++) {
-        if(strcmp(line[counter],'/')) {
-          strcat(math[parsetool], line[counter]);
-        } else {
-          parsetool++;
-        }
+    else if (strchr(line, '/') != NULL) {
+      math = parse_by_string(line, "/");
+      int i;
+      num += multipleoperations(math[0]);
+      for (i = 1; i < sizeof2d(math); i++) {
+        num /= multipleoperations(math[i]);
       }
     }
   }
+  else {
+    num = operationsnospace(line);
+  }
+  return num;
 }
-
-
 
 int main() {
 
@@ -393,6 +295,7 @@ int main() {
   while (i) {
 		printf("\n\033[0;31mS\033[0;34mA\033[0;35mL\033[0;32mT\033[0m:\033[0;36m~%s\033[0m$ ", direct);
 		char data[256];
+		fgets(data, sizeof(data), stdin);
     char ** semi_colon_args = parse_by_string(data, ";");
     int len = sizeof2d(semi_colon_args);
     int i;
@@ -409,8 +312,7 @@ int main() {
         strcpy(direct, shell_cd(args, direct));
       }
       else if (ismath(args[0])) {
-        printf("\n%d\n", operationsnospace(args[0]));
-        // printf("\n%d\n", multipleoperationsnospace(args[0]));
+        printf("\n%d\n", multipleoperations(args[0]));
       }
       else if (indexofredirect(args) != -1) {
         int * thing = redirect(args);
