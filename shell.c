@@ -384,10 +384,14 @@ int main() {
 	char direct[256];
   strcpy(direct, "");
 
+  FILE userinputs;
   while (i) {
 		printf("\n\033[0;31mS\033[0;34mA\033[0;35mL\033[0;32mT\033[0m:\033[0;36m~%s\033[0m$ ", direct);
 		char data[256];
 		fgets(data, sizeof(data), stdin);
+    open(userinputs, O_WRONLY | O_APPEND | O_CREAT, 0644);
+    write(userinputs, data, sizeof(data));
+    close(userinputs);
     char ** semi_colon_args = parse_by_string(data, ";");
     int len = sizeof2d(semi_colon_args);
     int i;
