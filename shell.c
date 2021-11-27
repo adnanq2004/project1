@@ -68,10 +68,32 @@ int shell_ls() {
   return 0;
 }
 
+char * move_back(char * line) {
+  char * ret = malloc(sizeof(line));
+  char * temp1;
+  char ** temp2 = calloc(5, sizeof(char *));
+  int i = 0;
+  while ((temp1 = strsep(&line, "/"))) {
+    temp2[i] = temp1;
+    i++;
+  }
+  int s = sizeof2d(temp2);
+  for (i = 0; i < s-1; i++) {
+    strcat(ret, temp2[2]);
+    strcat(ret, "/");
+  }
+  return ret;
+}
+
 char * shell_cd(char * args_list[], char * currentdir) {
 	if (!args_list[1] || args_list[1] == "") {
     strcpy(currentdir, "");
     chdir("");
+    return currentdir;
+  }
+  else if (!strcmp(args_list[1], "..")) {
+    currentdir = move_back(args_list[1]);
+    chdir("..");
     return currentdir;
   }
   else {
