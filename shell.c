@@ -22,30 +22,6 @@ char ** parse_by_string(char * line, char * string) {
   return returnline;
 }
 
-// char **parse_args( char *line ) {
-//   char *temp;
-//   int counter;
-//   char **returnline = calloc(5, sizeof(char *));
-//   counter = 0;
-//   while ((temp = strsep(&line, " "))) {
-//     returnline[counter] = temp;
-//     counter++;
-//   }
-//   return returnline;
-// }
-//
-// char ** parse_semicolons(char * line) {
-//   char *temp;
-//   int counter;
-//   char **returnline = calloc(5, sizeof(char *));
-//   counter = 0;
-//   while ((temp = strsep(&line, ";"))) {
-//     returnline[counter] = temp;
-//     counter++;
-//   }
-//   return returnline;
-// }
-
 int sizeof2d(char ** args) {
   int i = 0;
   while(args[i]) {
@@ -312,18 +288,6 @@ int multipleoperationsnospace(char * line) {
   }
 }
 
-// void shell_pipe(char* process1, char* process2) {
-//   char temp[255];
-//   FILE *input, *output;
-//   input = popen(args1, "w");
-//   output = popen(args2, "r");
-//   while(fgets(temp, 255, input)) {
-//     fputs(temp, output);
-//   }
-//   pclose(input);
-//   pclose(output);
-// }
-
 int main() {
 
 	int child = 0;
@@ -360,11 +324,7 @@ int main() {
         if (!child) {
           execvp(args[0], args);
           exit(0);
-        }
-        // else if (!(strcmp(args[1], "||" )) {
-        //   shell_pipe(args);
-        // }
-        else {
+        } else {
           if (thing[0] != -1) {
             dup2(thing[1], thing[0]);
           }
