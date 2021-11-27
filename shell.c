@@ -10,39 +10,41 @@
 #include <fcntl.h>
 #include <pwd.h>
 
-int argcount(char *line){
-  int i;
-  int c = 1;
-  for (i = 0; i < strlen(line); i ++){
-    if (line[i] == ' ')
-      c ++;
-  }
-  return c;
-}
-
-char **parse_args( char *line ) {
+char ** parse_by_string(char * line, char * string) {
   char *temp;
   int counter;
   char **returnline = calloc(5, sizeof(char *));
   counter = 0;
-  while ((temp = strsep(&line, " "))) {
+  while ((temp = strsep(&line, string))) {
     returnline[counter] = temp;
     counter++;
   }
   return returnline;
 }
 
-char ** parse_semicolons(char * line) {
-  char *temp;
-  int counter;
-  char **returnline = calloc(5, sizeof(char *));
-  counter = 0;
-  while ((temp = strsep(&line, ";"))) {
-    returnline[counter] = temp;
-    counter++;
-  }
-  return returnline;
-}
+// char **parse_args( char *line ) {
+//   char *temp;
+//   int counter;
+//   char **returnline = calloc(5, sizeof(char *));
+//   counter = 0;
+//   while ((temp = strsep(&line, " "))) {
+//     returnline[counter] = temp;
+//     counter++;
+//   }
+//   return returnline;
+// }
+//
+// char ** parse_semicolons(char * line) {
+//   char *temp;
+//   int counter;
+//   char **returnline = calloc(5, sizeof(char *));
+//   counter = 0;
+//   while ((temp = strsep(&line, ";"))) {
+//     returnline[counter] = temp;
+//     counter++;
+//   }
+//   return returnline;
+// }
 
 int sizeof2d(char ** args) {
   int i = 0;
@@ -125,7 +127,7 @@ int indexofredirect(char ** args) {
   int ret = -1;
   int i;
   for (i = 0; i < n; i++) {
-    if (!strcmp(args[i], ">") || !strcmp(args[i], "<") || !strcmp(args[i], ">>")) {
+    if (!strcmp(args[i], ">") || !strcmp(args[i], "<") || !strcmp(args[i], ">>") || !strcmp(args[i], "|")) {
       ret = i;
       break;
     }
@@ -167,6 +169,19 @@ int * redirect(char ** args) {
       fd[1] = stdin;
       return fd;
     }
+    else if (!strcmp(*temp, "|")) {
+      // int file = open("pipefile", O_CREAT | O_TRUNC | O_RDWR, 0644);
+      char ** temppipe = malloc(sizeof(args));
+      strcpy(temppipe[0], *(temp-1));
+      strcpy(temppipe[1], ">");
+      strcpy(temppipe[2], "pipefile");
+      redirect(temppipe);
+
+      strcpy(temppipe[0], *(temp+1));
+      strcpy(temppipe[1], "<");
+      strcpy(temppipe[2], "pipefile");
+      redirect(temppipe);
+    }
     else {
       temp++;
     }
@@ -174,6 +189,127 @@ int * redirect(char ** args) {
   fd[0] = -1;
   fd[1] = -1;
   return fd;
+}
+
+// int isoperation(char ** args) {
+//   int ret = 0;
+//   int i;
+//   int s = sizeof2d(args);
+//   for (i = 0; i < s && !ret; i++) {
+//     if (args[i][0] == '+' || args[i][0] == '-' || args[i][0] == '*' || args[i][0] == '/') {
+//       ret = args[i][0];
+//     }
+//   }
+//   return ret;
+// }
+
+int ismath(char * line) {
+  int i = 0;
+  if (strchr(line, '+') || strchr(line, '-') || strchr(line, '*') || strchr(line, '/')) {
+    i = 1;
+  }
+  return i;
+}
+
+//this works for a single type of operation only.
+int operationsnospace(char * line) {
+  if (strchr(line, '+')) {
+    char ** maths = parse_by_string(line, "+");
+    int num = atoi(maths[0]);
+    int i;
+    for (i = 1; i < sizeof2d(maths); i++) {
+      num += atoi(maths[i]);
+    }
+    return num;
+  }
+  else if (strchr(line, '-')) {
+    char ** maths = parse_by_string(line, "-");
+    int num = atoi(maths[0]);
+    int i;
+    for (i = 1; i < sizeof2d(maths); i++) {
+      num -= atoi(maths[i]);
+    }
+    return num;
+  }
+  else if (strchr(line, '*')) {
+    char ** maths = parse_by_string(line, "*");
+    int num = atoi(maths[0]);
+    int i;
+    for (i = 1; i < sizeof2d(maths); i++) {
+      num *= atoi(maths[i]);
+    }
+    return num;
+  }
+  else if (strchr(line, '/')) {
+    char ** maths = parse_by_string(line, "/");
+    int num = atoi(maths[0]);
+    int i;
+    for (i = 1; i < sizeof2d(maths); i++) {
+      num /= atoi(maths[i]);
+    }
+    return num;
+  }
+}
+
+int multipleoperationsnospace(char * line) {
+  char ** math;
+  int num = 0;
+  if (strchr(line, '+')) {
+    math = parse_by_string(line, "+");
+    int i;
+    for (i = 0; i < sizeof2d(math); i++) {
+      if (!strchr(math[i], '-') && !strchr(math[i], '*') && !strchr(math[i], '/')) {
+        num += operationsnospace(math[i]);
+        return num;
+      }
+      else {
+        num += multipleoperationsnospace(math[i]);
+        return num;
+      }
+    }
+  }
+  else if (strchr(line, '-')) {
+    math = parse_by_string(line, "-");
+    int i;
+    for (i = 0; i < sizeof2d(math); i++) {
+      if (!strchr(math[i], '+') && !strchr(math[i], '*') && !strchr(math[i], '/')) {
+        num += operationsnospace(math[i]);
+        return num;
+      }
+      else {
+        num += multipleoperationsnospace(math[i]);
+        return num;
+      }
+    }
+  }
+  else if (strchr(line, '*')) {
+    math = parse_by_string(line, "*");
+    int i;
+    for (i = 0; i < sizeof2d(math); i++) {
+      if (!strchr(math[i], '-') && !strchr(math[i], '+') && !strchr(math[i], '/')) {
+        num += operationsnospace(math[i]);
+        return num;
+      }
+      else {
+        num += multipleoperationsnospace(math[i]);
+        return num;
+      }
+    }
+  }
+  else if (strchr(line, '/')) {
+    math = parse_by_string(line, "/");
+    int i;
+    for (i = 0; i < sizeof2d(math); i++) {
+      if (!strchr(math[i], '-') && !strchr(math[i], '*') && !strchr(math[i], '+')) {
+        num += operationsnospace(math[i]);
+        return num;
+      }
+      else {
+        num += multipleoperationsnospace(math[i]);
+        return num;
+      }
+    }
+  }
 }
 
 // void shell_pipe(char* process1, char* process2) {
@@ -196,16 +332,15 @@ int main() {
   strcpy(direct, "");
 
   while (i) {
-		printf("\nSALT: ~%s$ ", direct);
+		printf("\n\033[0;31mS\033[0;34mA\033[0;35mL\033[0;32mT\033[0m:\033[0;36m~%s\033[0m$ ", direct);
 		char data[256];
 		fgets(data, sizeof(data), stdin);
-
-    char ** semi_colon_args = parse_semicolons(data);
+    char ** semi_colon_args = parse_by_string(data, ";");
     int len = sizeof2d(semi_colon_args);
     int i;
     for (i = 0; i < len; i++) {
       strcpy(semi_colon_args[i], splice(semi_colon_args[i]));
-      char ** args = parse_args(semi_colon_args[i]);
+      char ** args = parse_by_string(semi_colon_args[i], " ");
       if (!strcmp(args[0], "exit")) {
         exit(0);
       }
@@ -214,6 +349,10 @@ int main() {
       }
       else if (!strcmp(args[0], "cd")) {
         strcpy(direct, shell_cd(args, direct));
+      }
+      else if (ismath(args[0])) {
+        printf("\n%d\n", operationsnospace(args[0]));
+        // printf("\n%d\n", multipleoperationsnospace(args[0]));
       }
       else if (indexofredirect(args) != -1) {
         int * thing = redirect(args);
