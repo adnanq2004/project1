@@ -227,66 +227,102 @@ int operationsnospace(char * line) {
   }
 }
 
-int multipleoperationsnospace(char * line) {
-  char ** math;
-  int num = 0;
-  if (strchr(line, '+')) {
-    math = parse_by_string(line, "+");
-    int i;
-    for (i = 0; i < sizeof2d(math); i++) {
-      if (!strchr(math[i], '-') && !strchr(math[i], '*') && !strchr(math[i], '/')) {
-        num += operationsnospace(math[i]);
-        return num;
-      }
-      else {
-        num += multipleoperationsnospace(math[i]);
-        return num;
-      }
-    }
+// int multipleoperationsnospace(char * line) {
+//   char ** math;
+//   int num = 0;
+//   if (strchr(line, '+')) {
+//     math = parse_by_string(line, "+");
+//     int i;
+//     for (i = 0; i < sizeof2d(math); i++) {
+//       if (!strchr(math[i], '-') && !strchr(math[i], '*') && !strchr(math[i], '/')) {
+//         num += operationsnospace(math[i]);
+//         return num;
+//       }
+//       else {
+//         num += multipleoperationsnospace(math[i]);
+//         return num;
+//       }
+//     }
+//   }
+//   else if (strchr(line, '-')) {
+//     math = parse_by_string(line, "-");
+//     int i;
+//     for (i = 0; i < sizeof2d(math); i++) {
+//       if (!strchr(math[i], '+') && !strchr(math[i], '*') && !strchr(math[i], '/')) {
+//         num += operationsnospace(math[i]);
+//         return num;
+//       }
+//       else {
+//         num += multipleoperationsnospace(math[i]);
+//         return num;
+//       }
+//     }
+//   }
+//   else if (strchr(line, '*')) {
+//     math = parse_by_string(line, "*");
+//     int i;
+//     for (i = 0; i < sizeof2d(math); i++) {
+//       if (!strchr(math[i], '-') && !strchr(math[i], '+') && !strchr(math[i], '/')) {
+//         num += operationsnospace(math[i]);
+//         return num;
+//       }
+//       else {
+//         num += multipleoperationsnospace(math[i]);
+//         return num;
+//       }
+//     }
+//   }
+//   else if (strchr(line, '/')) {
+//     math = parse_by_string(line, "/");
+//     int i;
+//     for (i = 0; i < sizeof2d(math); i++) {
+//       if (!strchr(math[i], '-') && !strchr(math[i], '*') && !strchr(math[i], '+')) {
+//         num += operationsnospace(math[i]);
+//         return num;
+//       }
+//       else {
+//         num += multipleoperationsnospace(math[i]);
+//         return num;
+//       }
+//     }
+//   }
+// }
+
+int multipleoperationdetect(char * line) {
+  int count = 0;
+  if(strchr(line, '+')) {
+    count++;
   }
-  else if (strchr(line, '-')) {
-    math = parse_by_string(line, "-");
-    int i;
-    for (i = 0; i < sizeof2d(math); i++) {
-      if (!strchr(math[i], '+') && !strchr(math[i], '*') && !strchr(math[i], '/')) {
-        num += operationsnospace(math[i]);
-        return num;
-      }
-      else {
-        num += multipleoperationsnospace(math[i]);
-        return num;
-      }
-    }
+  if(strchr(line, '-')) {
+    count++;
   }
-  else if (strchr(line, '*')) {
-    math = parse_by_string(line, "*");
-    int i;
-    for (i = 0; i < sizeof2d(math); i++) {
-      if (!strchr(math[i], '-') && !strchr(math[i], '+') && !strchr(math[i], '/')) {
-        num += operationsnospace(math[i]);
-        return num;
-      }
-      else {
-        num += multipleoperationsnospace(math[i]);
-        return num;
-      }
-    }
+  if(strchr(line, '*')) {
+    count++;
   }
-  else if (strchr(line, '/')) {
-    math = parse_by_string(line, "/");
-    int i;
-    for (i = 0; i < sizeof2d(math); i++) {
-      if (!strchr(math[i], '-') && !strchr(math[i], '*') && !strchr(math[i], '+')) {
-        num += operationsnospace(math[i]);
-        return num;
-      }
-      else {
-        num += multipleoperationsnospace(math[i]);
-        return num;
-      }
-    }
+  if(strchr(line, '/')) {
+    count++;
+  }
+  if(count > 1) {
+    return 1;
+  } else {
+    return 0;
   }
 }
+
+// int multipleoperations(char * line) {
+//   if(multipleoperationdetect(line)) {
+//     int counter;
+//     int parsetool;
+//     char ** math = malloc(sizeof(line));
+//     if(strchr(line, '+')) {
+//       for(counter = 0; counter < strlen(line); counter++) {
+//         if(strcmp(line[counter],'+')) {
+//
+//         }
+//       }
+//     }
+//   }
+// }
 
 int main() {
 
