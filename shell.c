@@ -309,20 +309,73 @@ int multipleoperationdetect(char * line) {
   }
 }
 
-// int multipleoperations(char * line) {
-//   if(multipleoperationdetect(line)) {
-//     int counter;
-//     int parsetool;
-//     char ** math = malloc(sizeof(line));
-//     if(strchr(line, '+')) {
-//       for(counter = 0; counter < strlen(line); counter++) {
-//         if(strcmp(line[counter],'+')) {
-//
-//         }
-//       }
-//     }
-//   }
-// }
+int multipleoperations(char * line) {
+  if(multipleoperationdetect(line)) {
+    int counter;
+    int parsetool;
+    char ** math = malloc(sizeof(line));
+    if(strchr(line, '+')) {
+      int parsetool = 0;
+      for(counter = 0; counter < strlen(line); counter++) {
+        if(strcmp(line[counter],'+')) {
+          strcat(math[parsetool], line[counter]);
+        } else {
+          parsetool++;
+        }
+      }
+      for(counter = 0; counter < parsetool; counter++) {
+        if(multipleoperationdetect(math[counter]) {
+          math[parsetool] = multipleoperations(math[counter]);
+        } else if(ismath(math[counter])) {
+          math[parsetool] = operationsnospace(math[counter]);
+        }
+      }
+    }
+    else if(strc(line, '-')) {
+      int parsetool = 0;
+      for(counter = 0; counter < strlen(line); counter++) {
+        if(strcmp(line[counter],'-')) {
+          strcat(math[parsetool], line[counter]);
+        } else {
+          parsetool++;
+        }
+      }
+      for(counter = 0; counter < parsetool; counter++) {
+        if(multipleoperationdetect(math[counter]) {
+          math[parsetool] = multipleoperations(math[counter]);
+        } else if(ismath(math[counter])) {
+          math[parsetool] = operationsnospace(math[counter]);
+        }
+      }
+    }
+    else if(strchr(line, '*')) {
+      int parsetool = 0;
+      for(counter = 0; counter < strlen(line); counter++) {
+        if(strcmp(line[counter],'*')) {
+          strcat(math[parsetool], line[counter]);
+        } else {
+          parsetool++;
+        }
+      }
+      for(counter = 0; counter < parsetool; counter++) {
+        if(multipleoperationdetect(math[counter]) {
+          math[parsetool] = multipleoperations(math[counter]);
+        } else if(ismath(math[counter])) {
+          math[parsetool] = operationsnospace(math[counter]);
+        }
+      }
+    }
+    else if(strchr(line, '/')) {
+      for(counter = 0; counter < strlen(line); counter++) {
+        if(strcmp(line[counter],'/')) {
+          strcat(math[parsetool], line[counter]);
+        } else {
+          parsetool++;
+        }
+      }
+    }
+  }
+}
 
 int main() {
 
