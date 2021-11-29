@@ -40,6 +40,7 @@ int shell_ls() {
   printf("\n");
   while(data) {
     printf("%s  ", data->d_name);
+    printf("\n");
     data = readdir(d);
   }
   printf("\n");
