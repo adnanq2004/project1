@@ -1,6 +1,7 @@
 # Eric Guo and Adnan Quayyum
 
-# Functions We Have
+## Functions We Have
+- semicolons
 - cd
   - absolute directories are accounted for
 - ls
@@ -12,14 +13,14 @@
   - operations with only 1 operand works fine
   - equations with more than 1 operand has a chance of returning wrong answer
 
-# Features We Tried
+## Features We Tried
 - up arrow key to go through history of shell
   - We failed when we did research and found that it was very difficult to make C recognize the up arrow key signal properly, and as such we gave up on it
 
-# Bugs
+## Bugs
 - As stated previously, our shell's mathematical capabilities are questionable when there are multiple operands involved
 
-# Function Headers
+## Function Headers
 - char ** parse_by_string(char * line, char * string);
 - int sizeof2d(char ** args);
 - int shell_ls();
