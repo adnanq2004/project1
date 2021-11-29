@@ -12,6 +12,7 @@
   - there must be no spaces between numbers and operands
   - operations with only 1 operand works fine
   - equations with more than 1 operand has a chance of returning wrong answer
+  - division in general can be very stubborn because the functions used rely on ints
 
 ## Features We Tried
 - up arrow key to go through history of shell
@@ -19,6 +20,7 @@
 
 ## Bugs
 - As stated previously, our shell's mathematical capabilities are questionable when there are multiple operands involved
+- it's possible to try and cd into a regular file, and have that displayed as part of the directory, but no change in your actual file directory
 
 ## Function Headers
 - char ** parse_by_string(char * line, char * string);
