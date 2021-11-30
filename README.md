@@ -17,7 +17,7 @@
   - equations with more than 1 operand has a chance of returning wrong answer
   - division in general can be very stubborn because the functions used rely on ints
   - **to test, run "number1[operation]number2[operation]...[operation]numbern"**
-    - ex: "1+2*3" or "3*4+2"
+    - ex: "1+2-3" or "3*4+2"
     - it is crucial that there are no spaces
 
 ## Features We Tried
