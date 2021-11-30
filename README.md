@@ -4,8 +4,11 @@
 - semicolons
 - cd
   - absolute directories are accounted for
+  - **to test, run "cd <directory name>"**
+    - a repo may or may not already be present, due to github issues.
 - ls
   - ls prints new line for everything found, not as compact
+  - **to test, run "ls"**
 - pipes
 - redirection
 - mathematical operations
@@ -13,6 +16,9 @@
   - operations with only 1 operand works fine
   - equations with more than 1 operand has a chance of returning wrong answer
   - division in general can be very stubborn because the functions used rely on ints
+  - **to test, run "number1<operation>number2<operation>...numbern"**
+    - ex: "1+2*3" or "3*4+2"
+    - it is crucial that there are no spaces
 
 ## Features We Tried
 - up arrow key to go through history of shell
