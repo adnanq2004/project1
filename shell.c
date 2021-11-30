@@ -70,9 +70,10 @@ char * shell_cd(char * args_list[], char * currentdir) {
     return currentdir;
   }
   else {
-    strcat(currentdir, "/");
-    strcat(currentdir, args_list[1]);
-    chdir(args_list[1]);
+    if (chdir(args_list[1]) != -1) {
+    	strcat(currentdir, "/");
+    	strcat(currentdir, args_list[1]);
+    }
     return currentdir;
   }
 }
