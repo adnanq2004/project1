@@ -20,6 +20,7 @@
   - **to test, run "number1[operation]number2[operation]...[operation]numbern"**
     - ex: "1+2-3" or "3*4+2"
     - it is crucial that there are no spaces
+- colorful shell name
 
 ## Features We Tried
 - up arrow key to go through history of shell
