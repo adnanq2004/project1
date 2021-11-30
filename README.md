@@ -4,6 +4,7 @@
 - semicolons
 - cd
   - absolute directories are accounted for
+    - meaning you should be able to input "cd [~/directory1/directory2/directory3...]"
   - **to test, run "cd [directory name]"**
     - a repo may or may not already be present, due to github issues.
 - ls
