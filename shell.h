@@ -10,16 +10,16 @@
 #include <fcntl.h>
 #include <pwd.h>
 
-char ** parse_by_string(char * line, char * string);
-int sizeof2d(char ** args);
-int shell_ls();
-char * move_back(char * line);
-char * shell_cd(char * args_list[], char * currentdir);
-char * splice(char * line);
-int indexofredirect(char ** args);
-char ** redirect_helper(int filename, int std, int * fd, char ** args_list);
-int * redirect(char ** args);
-int ismath(char * line);
-int operationsnospace(char * line);
-int multipleoperationdetect(char * line);
-int multipleoperations(char * line);
+char ** parse_by_string(char * line, char * string); //parsing as a string
+int sizeof2d(char ** args); // finds size of a 2d array
+int shell_ls(); // ls function of our shell
+char * move_back(char * line); //allows us to move back directories
+char * shell_cd(char * args_list[], char * currentdir); //cd function of our shell
+char * splice(char * line); 
+int indexofredirect(char ** args); //finds index of redirect
+char ** redirect_helper(int filename, int std, int * fd, char ** args_list); //helper function for redirect
+int * redirect(char ** args); //redirect function
+int ismath(char * line); //checks if there is a math operation in the line
+int operationsnospace(char * line); //simple one operand math
+int multipleoperationdetect(char * line); //check if there are multiple operands
+int multipleoperations(char * line); //math with multiple operands
