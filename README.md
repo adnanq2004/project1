@@ -4,7 +4,7 @@
 - semicolons
 - cd
   - absolute directories are accounted for
-  - **to test, run "cd <directory name>"**
+  - **to test, run "cd [directory name]"**
     - a repo may or may not already be present, due to github issues.
 - ls
   - ls prints new line for everything found, not as compact
